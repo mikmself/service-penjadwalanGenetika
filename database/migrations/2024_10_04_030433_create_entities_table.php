@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id(); // ID unik untuk setiap entitas
             $table->string('name'); // Nama entitas (misalnya: "Guru", "Ruang", dll.)
             $table->unsignedBigInteger('entity_type_id'); // Relasi ke tipe entitas
-            $table->unsignedBigInteger('user_id'); // Relasi ke pengguna (pemilik entitas)
+            $table->unsignedBigInteger('schedule_id'); // Relasi ke jadwal
             $table->timestamps(); // Timestamps created_at dan updated_at
 
             // Foreign keys
             $table->foreign('entity_type_id')->references('id')->on('entity_types');
-            $table->foreign('user_id')->references('id')->on('users');
+            //relasi ke table schedules
+            $table->foreign('schedule_id')->references('id')->on('schedules');
+
         });
     }
 

@@ -14,7 +14,10 @@ class ScheduleSeeder extends Seeder
     {
         // Menambahkan data contoh ke tabel schedules
         Schedule::insert([
-            ['user_id' => 2, 'name' => 'Jadwal Sekolah', 'start_time' => '2024-10-05 08:00:00', 'end_time' => '2024-10-05 10:00:00'],
+            [
+                'user_id' => 2,
+                'name' => 'Jadwal Sekolah'
+            ],
         ]);
     }
 }

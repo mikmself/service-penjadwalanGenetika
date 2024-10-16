@@ -40,4 +40,10 @@ class Entity extends Model
     {
         return $this->hasMany(EntityRelationship::class, 'child_entity_id');
     }
+    
+    // relasi ke table schedules
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 }

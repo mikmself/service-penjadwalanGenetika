@@ -22,5 +22,6 @@ class Schedule extends Model
     {
         return $this->hasMany(Entity::class);
     }
+
 }
 

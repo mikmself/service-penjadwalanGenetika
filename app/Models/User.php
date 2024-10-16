@@ -32,9 +32,5 @@ class User extends Authenticatable
         return $this->hasMany(Schedule::class);
     }
 
-    // Relasi ke entities
-    public function entities()
-    {
-        return $this->hasMany(Entity::class);
-    }
+
 }
