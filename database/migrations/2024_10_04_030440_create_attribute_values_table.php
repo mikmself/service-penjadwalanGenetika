@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attribute_values', function (Blueprint $table) {
-            $table->id(); // ID unik untuk setiap nilai atribut
-            $table->unsignedBigInteger('entity_id'); // Relasi ke entitas
-            $table->unsignedBigInteger('attribute_id'); // Relasi ke atribut
-            $table->text('value'); // Nilai atribut, bisa string, number, atau lainnya
-            $table->timestamps(); // Timestamps created_at dan updated_at
+            $table->id();
+            $table->unsignedBigInteger('entity_id');
+            $table->unsignedBigInteger('attribute_id');
+            $table->text('value_string')->nullable(); // Jika nilai berupa string
+            $table->integer('value_int')->nullable(); // Jika nilai berupa integer
+            $table->timestamp('value_datetime')->nullable(); // Jika nilai berupa datetime
+            $table->timestamps();
 
-            // Foreign keys
             $table->foreign('entity_id')->references('id')->on('entities')->onDelete('cascade');
             $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
         });

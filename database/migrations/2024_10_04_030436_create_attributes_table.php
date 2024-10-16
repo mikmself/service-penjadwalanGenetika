@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attributes', function (Blueprint $table) {
-            $table->id(); // ID unik untuk setiap atribut
-            $table->string('name'); // Nama atribut (misalnya: "Guru", "Ruangan", "Waktu")
-            $table->string('data_type'); // Tipe data (misalnya: string, integer, datetime)
-            $table->timestamps(); // Timestamps created_at dan updated_at
+            $table->id();
+            $table->string('name');
+            $table->enum('data_type', ['string', 'integer', 'datetime']); // Memperketat tipe data
+            $table->boolean('nullable')->default(false); // Mengizinkan null atau tidak
+            $table->string('default_value')->nullable(); // Nilai default jika diperlukan
+            $table->timestamps();
         });
+
     }
 
     /**

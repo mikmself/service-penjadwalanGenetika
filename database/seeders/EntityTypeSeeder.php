@@ -15,9 +15,9 @@ class EntityTypeSeeder extends Seeder
     {
         // Menambahkan data contoh ke tabel entity_types
         EntityType::insert([
-            ['name' => 'Sekolah'],
-            ['name' => 'Perusahaan'],
-            ['name' => 'Universitas'],
+            ['type' => 'Sekolah'],
+            ['type' => 'Perusahaan'],
+            ['type' => 'Universitas'],
         ]);
     }
 }

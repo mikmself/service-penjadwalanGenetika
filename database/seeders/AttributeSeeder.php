@@ -15,12 +15,12 @@ class AttributeSeeder extends Seeder
     {
         // Menambahkan data contoh ke tabel attributes
         Attribute::insert([
-            ['name' => 'Guru'],
-            ['name' => 'Ruang'],
-            ['name' => 'Siswa'],
-            ['name' => 'Hari'],
-            ['name' => 'Waktu'],
-            ['name' => 'Kelas'],
+            ['name' => 'nama', 'data_type' => 'string'],
+            ['name' => 'Ruangan', 'data_type' => 'string'],
+            ['name' => 'Siswa', 'data_type' => 'string'],
+            ['name' => 'Hari', 'data_type' => 'string'],
+            ['name' => 'Waktu', 'data_type' => 'datetime'],
+            ['name' => 'Kelas', 'data_type' => 'string'],
         ]);
     }
 }

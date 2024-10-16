@@ -15,11 +15,12 @@ class EntitySeeder extends Seeder
     {
         // Menambahkan data contoh ke tabel entities
         Entity::insert([
-            ['name' => 'Kelas A'],
-            ['name' => 'Kelas B'],
-            ['name' => 'Shift Pagi'],
-            ['name' => 'Shift Siang'],
-            ['name' => 'Shift Malam'],
+            ['name' => 'Sekolah 1', 'entity_type_id' => 1,'user_id' => 2],
+            ['name' => 'Sekolah 2', 'entity_type_id' => 1,'user_id' => 2],
+            ['name' => 'Perusahaan 1', 'entity_type_id' => 2,'user_id' => 3],
+            ['name' => 'Perusahaan 2', 'entity_type_id' => 2,'user_id' => 3],
+            ['name' => 'Universitas 1', 'entity_type_id' => 3,'user_id' => 4],
+            ['name' => 'Universitas 2', 'entity_type_id' => 3,'user_id' => 4],
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -15,10 +16,11 @@ class UserSeeder extends Seeder
     {
         // Menambahkan data contoh ke tabel users
         User::insert([
-            ['name' => 'Admin', 'email' => 'admin@example.com', 'password' => bcrypt('password')],
-            ['name' => 'Guru 1', 'email' => 'guru1@example.com', 'password' => bcrypt('password')],
-            ['name' => 'Siswa 1', 'email' => 'siswa1@example.com', 'password' => bcrypt('password')],
-            ['name' => 'Siswa 2', 'email' => 'siswa2@example.com', 'password' => bcrypt('password')],
+            ['name' => 'Admin', 'email' => 'admin@example.com', 'password' => Hash::make('password')],
+            // buatkan entiti untuk admin sekolah, perusahaan dan universitas
+            ['name' => 'Admin Sekolah', 'email' => 'adminsekolah@gmail.com', 'password' => Hash::make('password')],
+            ['name' => 'Admin Perusahaan', 'email' => 'adminperusahaan@gmail.com', 'password' => Hash::make('password')],
+            ['name' => 'Admin Universitas', 'email' => 'adminuniv@gmail.com', 'password' => Hash::make('password')],
         ]);
     }
 }
