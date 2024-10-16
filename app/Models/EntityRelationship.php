@@ -7,15 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class EntityRelationship extends Model
 {
-    protected $fillable = ['entity_id_1', 'entity_id_2', 'relationship_type'];
+    use HasFactory;
 
-    public function entity1()
+    protected $fillable = ['parent_entity_id', 'child_entity_id', 'relationship_type'];
+
+    // Relasi ke Entity (Parent)
+    public function parentEntity()
     {
-        return $this->belongsTo(Entity::class, 'entity_id_1');
+        return $this->belongsTo(Entity::class, 'parent_entity_id');
     }
 
-    public function entity2()
+    // Relasi ke Entity (Child)
+    public function childEntity()
     {
-        return $this->belongsTo(Entity::class, 'entity_id_2');
+        return $this->belongsTo(Entity::class, 'child_entity_id');
     }
 }
+

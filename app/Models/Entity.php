@@ -7,19 +7,37 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entity extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'entity_type_id', 'user_id'];
 
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class, 'entity_attribute', 'entity_id', 'attribute_id')
-            ->withPivot('value');
-    }
+    // Relasi ke EntityType
     public function entityType()
     {
         return $this->belongsTo(EntityType::class);
     }
+
+    // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke AttributeValue
+    public function attributeValues()
+    {
+        return $this->hasMany(AttributeValue::class);
+    }
+
+    // Relasi ke EntityRelationship sebagai parent
+    public function parentRelationships()
+    {
+        return $this->hasMany(EntityRelationship::class, 'parent_entity_id');
+    }
+
+    // Relasi ke EntityRelationship sebagai child
+    public function childRelationships()
+    {
+        return $this->hasMany(EntityRelationship::class, 'child_entity_id');
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('entity_types', function (Blueprint $table) {
             $table->id(); // ID unik untuk tipe entitas
-            $table->string('type');
+            $table->string('name');
             $table->timestamps(); // Timestamps created_at dan updated_at
         });
     }

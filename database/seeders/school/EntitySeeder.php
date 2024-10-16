@@ -1,26 +1,46 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\school;
 
-use App\Models\Entity;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Entity;
+use App\Models\User;
 
 class EntitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        // Menambahkan data contoh ke tabel entities
-        Entity::insert([
-            ['name' => 'Sekolah 1', 'entity_type_id' => 1,'user_id' => 2],
-            ['name' => 'Sekolah 2', 'entity_type_id' => 1,'user_id' => 2],
-            ['name' => 'Perusahaan 1', 'entity_type_id' => 2,'user_id' => 3],
-            ['name' => 'Perusahaan 2', 'entity_type_id' => 2,'user_id' => 3],
-            ['name' => 'Universitas 1', 'entity_type_id' => 3,'user_id' => 4],
-            ['name' => 'Universitas 2', 'entity_type_id' => 3,'user_id' => 4],
+        $user = User::first();
+
+        // Membuat entitas untuk sekolah
+        Entity::create([
+            'name' => 'Guru',
+            'entity_type_id' => 1, // Tipe: Manusia
+            'user_id' => $user->id,
+        ]);
+
+        Entity::create([
+            'name' => 'Siswa',
+            'entity_type_id' => 1, // Tipe: Manusia
+            'user_id' => $user->id,
+        ]);
+
+        Entity::create([
+            'name' => 'Ruang Kelas',
+            'entity_type_id' => 2, // Tipe: Benda
+            'user_id' => $user->id,
+        ]);
+
+        Entity::create([
+            'name' => 'Mata Pelajaran',
+            'entity_type_id' => 2, // Tipe: Benda
+            'user_id' => $user->id,
+        ]);
+
+        Entity::create([
+            'name' => 'Jam Pelajaran',
+            'entity_type_id' => 2, // Tipe: Benda
+            'user_id' => $user->id,
         ]);
     }
 }

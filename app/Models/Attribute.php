@@ -7,15 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attribute extends Model
 {
-    protected $fillable = ['name'];
+    use HasFactory;
 
-    public function entities()
-    {
-        return $this->belongsToMany(Entity::class, 'entity_attribute', 'attribute_id', 'entity_id')
-            ->withPivot('value');
-    }
+    protected $fillable = ['name', 'data_type'];
 
-    public function values()
+    // Relasi ke AttributeValue
+    public function attributeValues()
     {
         return $this->hasMany(AttributeValue::class);
     }

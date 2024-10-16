@@ -1,23 +1,16 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\school;
 
-use App\Models\EntityType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\EntityType;
 
 class EntityTypeSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        // Menambahkan data contoh ke tabel entity_types
-        EntityType::insert([
-            ['type' => 'Sekolah'],
-            ['type' => 'Perusahaan'],
-            ['type' => 'Universitas'],
-        ]);
+        // Membuat beberapa tipe entitas
+        EntityType::create(['name' => 'Manusia']);    // Tipe entitas manusia (guru, siswa)
+        EntityType::create(['name' => 'Benda']);      // Tipe entitas benda (ruang, jam)
     }
 }

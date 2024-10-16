@@ -1,22 +1,32 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\school;
 
-use App\Models\EntityRelationship;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\EntityRelationship;
+use App\Models\Entity;
 
 class EntityRelationshipSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        // Menambahkan data contoh ke tabel entity_relationships
-        EntityRelationship::insert([
-            ['entity_id_1' => 1, 'entity_id_2' => 3, 'relationship_type' => 'Mengajar'],
-            ['entity_id_1' => 2, 'entity_id_2' => 4, 'relationship_type' => 'Ditempatkan Di'],
+        // Membuat relasi entitas (contoh: Guru mengajar Mata Pelajaran)
+        $guru = Entity::where('name', 'Guru')->first();
+        $mataPelajaran = Entity::where('name', 'Mata Pelajaran')->first();
+
+        EntityRelationship::create([
+            'parent_entity_id' => $guru->id,
+            'child_entity_id' => $mataPelajaran->id,
+            'relationship_type' => 'mengajar',
+        ]);
+
+        // Membuat relasi entitas (contoh: Siswa belajar Mata Pelajaran)
+        $siswa = Entity::where('name', 'Siswa')->first();
+
+        EntityRelationship::create([
+            'parent_entity_id' => $siswa->id,
+            'child_entity_id' => $mataPelajaran->id,
+            'relationship_type' => 'belajar',
         ]);
     }
 }
