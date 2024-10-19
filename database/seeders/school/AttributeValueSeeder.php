@@ -4,77 +4,89 @@ namespace Database\Seeders\school;
 
 use Illuminate\Database\Seeder;
 use App\Models\AttributeValue;
-use App\Models\Entity;
 use App\Models\Attribute;
 
 class AttributeValueSeeder extends Seeder
 {
     public function run()
     {
-        // Dummy data untuk guru
-        $guru = Entity::where('name', 'Guru')->first();
-        AttributeValue::create([
-            'entity_id' => $guru->id,
-            'attribute_id' => Attribute::where('name', 'Nama Lengkap')->first()->id,
-            'value_string' => 'Budi Santoso'
-        ]);
-        AttributeValue::create([
-            'entity_id' => $guru->id,
-            'attribute_id' => Attribute::where('name', 'NIP')->first()->id,
-            'value_string' => '123456789'
-        ]);
+        // Dummy data untuk banyak guru
+        $gurus = [
+            ['name' => 'Budi Santoso', 'nip' => '123456789'],
+            ['name' => 'Ani Rahmawati', 'nip' => '987654321'],
+            ['name' => 'Cahyo Putro', 'nip' => '111222333'],
+            ['name' => 'Dian Wijaya', 'nip' => '444555666'],
+            ['name' => 'Eko Saputra', 'nip' => '777888999'],
+        ];
 
-        // Dummy data untuk siswa
-        $siswa = Entity::where('name', 'Siswa')->first();
-        AttributeValue::create([
-            'entity_id' => $siswa->id,
-            'attribute_id' => Attribute::where('name', 'Nama Lengkap')->first()->id,
-            'value_string' => 'Adi Pratama'
-        ]);
-        AttributeValue::create([
-            'entity_id' => $siswa->id,
-            'attribute_id' => Attribute::where('name', 'NIS')->first()->id,
-            'value_string' => '987654321'
-        ]);
+        foreach ($gurus as $guruData) {
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Nama Lengkap')->first()->id,
+                'value_string' => $guruData['name']
+            ]);
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'NIP')->first()->id,
+                'value_string' => $guruData['nip']
+            ]);
+        }
 
-        // Dummy data untuk ruang kelas
-        $ruangKelas = Entity::where('name', 'Ruang Kelas')->first();
-        AttributeValue::create([
-            'entity_id' => $ruangKelas->id,
-            'attribute_id' => Attribute::where('name', 'Nama Ruang')->first()->id,
-            'value_string' => 'Ruang 101'
-        ]);
-        AttributeValue::create([
-            'entity_id' => $ruangKelas->id,
-            'attribute_id' => Attribute::where('name', 'Kapasitas')->first()->id,
-            'value_int' => 30
-        ]);
+        // Dummy data untuk banyak ruang kelas
+        $rooms = [
+            ['name' => 'Ruang 101', 'kapasitas' => 30],
+            ['name' => 'Ruang 102', 'kapasitas' => 25],
+            ['name' => 'Ruang 103', 'kapasitas' => 20],
+            ['name' => 'Ruang 104', 'kapasitas' => 40],
+            ['name' => 'Ruang 105', 'kapasitas' => 35],
+        ];
+
+        foreach ($rooms as $roomData) {
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Nama Ruang')->first()->id,
+                'value_string' => $roomData['name']
+            ]);
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Kapasitas')->first()->id,
+                'value_int' => $roomData['kapasitas']
+            ]);
+        }
 
         // Dummy data untuk mata pelajaran
-        $mataPelajaran = Entity::where('name', 'Mata Pelajaran')->first();
-        AttributeValue::create([
-            'entity_id' => $mataPelajaran->id,
-            'attribute_id' => Attribute::where('name', 'Nama Mata Pelajaran')->first()->id,
-            'value_string' => 'Matematika'
-        ]);
-        AttributeValue::create([
-            'entity_id' => $mataPelajaran->id,
-            'attribute_id' => Attribute::where('name', 'Kurikulum')->first()->id,
-            'value_string' => 'Kurikulum 2013'
-        ]);
+        $subjects = [
+            ['name' => 'Matematika', 'kurikulum' => 'Kurikulum 2013'],
+            ['name' => 'Bahasa Indonesia', 'kurikulum' => 'Kurikulum 2013'],
+            ['name' => 'Fisika', 'kurikulum' => 'Kurikulum 2013'],
+            ['name' => 'Kimia', 'kurikulum' => 'Kurikulum 2013'],
+            ['name' => 'Biologi', 'kurikulum' => 'Kurikulum 2013'],
+        ];
+
+        foreach ($subjects as $subjectData) {
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Nama Mata Pelajaran')->first()->id,
+                'value_string' => $subjectData['name']
+            ]);
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Kurikulum')->first()->id,
+                'value_string' => $subjectData['kurikulum']
+            ]);
+        }
 
         // Dummy data untuk jam pelajaran
-        $jamPelajaran = Entity::where('name', 'Jam Pelajaran')->first();
-        AttributeValue::create([
-            'entity_id' => $jamPelajaran->id,
-            'attribute_id' => Attribute::where('name', 'Waktu Mulai')->first()->id,
-            'value_datetime' => '2024-01-01 08:00:00'
-        ]);
-        AttributeValue::create([
-            'entity_id' => $jamPelajaran->id,
-            'attribute_id' => Attribute::where('name', 'Waktu Selesai')->first()->id,
-            'value_datetime' => '2024-01-01 10:00:00'
-        ]);
+        $scheduleTimes = [
+            ['start' => '2024-01-01 08:00:00', 'end' => '2024-01-01 10:00:00'],
+            ['start' => '2024-01-01 10:00:00', 'end' => '2024-01-01 12:00:00'],
+            ['start' => '2024-01-01 13:00:00', 'end' => '2024-01-01 15:00:00'],
+            ['start' => '2024-01-01 15:00:00', 'end' => '2024-01-01 17:00:00'],
+        ];
+
+        foreach ($scheduleTimes as $time) {
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Waktu Mulai')->first()->id,
+                'value_datetime' => $time['start']
+            ]);
+            AttributeValue::create([
+                'attribute_id' => Attribute::where('name', 'Waktu Selesai')->first()->id,
+                'value_datetime' => $time['end']
+            ]);
+        }
     }
 }
-

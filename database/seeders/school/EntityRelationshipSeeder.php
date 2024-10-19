@@ -10,23 +10,18 @@ class EntityRelationshipSeeder extends Seeder
 {
     public function run()
     {
+        $gurus = Entity::where('name', 'Guru')->get();
+        $mataPelajaranList = Entity::where('name', 'Mata Pelajaran')->get();
+
         // Membuat relasi entitas (contoh: Guru mengajar Mata Pelajaran)
-        $guru = Entity::where('name', 'Guru')->first();
-        $mataPelajaran = Entity::where('name', 'Mata Pelajaran')->first();
-
-        EntityRelationship::create([
-            'parent_entity_id' => $guru->id,
-            'child_entity_id' => $mataPelajaran->id,
-            'relationship_type' => 'mengajar',
-        ]);
-
-        // Membuat relasi entitas (contoh: Siswa belajar Mata Pelajaran)
-        $siswa = Entity::where('name', 'Siswa')->first();
-
-        EntityRelationship::create([
-            'parent_entity_id' => $siswa->id,
-            'child_entity_id' => $mataPelajaran->id,
-            'relationship_type' => 'belajar',
-        ]);
+        foreach ($gurus as $guru) {
+            foreach ($mataPelajaranList as $mataPelajaran) {
+                EntityRelationship::create([
+                    'parent_entity_id' => $guru->id,
+                    'child_entity_id' => $mataPelajaran->id,
+                    'relationship_type' => 'mengajar',
+                ]);
+            }
+        }
     }
 }
