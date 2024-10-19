@@ -9,13 +9,7 @@ class AttributeValue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['entity_id', 'attribute_id', 'value'];
-
-    // Relasi ke Entity
-    public function entity()
-    {
-        return $this->belongsTo(Entity::class);
-    }
+    protected $fillable = ['attribute_id', 'value'];
 
     // Relasi ke Attribute
     public function attribute()

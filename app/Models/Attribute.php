@@ -9,8 +9,13 @@ class Attribute extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'data_type'];
+    protected $fillable = ['entity_id', 'name', 'data_type'];
 
+    // Relasi ke Entity
+    public function entity()
+    {
+        return $this->belongsTo(Entity::class);
+    }
     // Relasi ke AttributeValue
     public function attributeValues()
     {
