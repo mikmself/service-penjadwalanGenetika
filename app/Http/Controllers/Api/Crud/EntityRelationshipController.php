@@ -8,6 +8,7 @@ use App\Http\Requests\EntitiyRequest\UpdateEntityRelationshipRequest;
 use App\Models\EntityRelationship;
 use App\Services\Api\Crud\EntityRelationshipService;
 use Illuminate\Http\JsonResponse;
+use Exception;
 
 class EntityRelationshipController extends Controller
 {
@@ -20,31 +21,51 @@ class EntityRelationshipController extends Controller
 
     public function index(): JsonResponse
     {
-        $relationships = $this->entityRelationshipService->getAllEntityRelationships();
-        return response()->json($relationships);
+        try {
+            $relationships = $this->entityRelationshipService->getAllEntityRelationships();
+            return $this->sendResponse($relationships, 'Entity relationships retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entity relationships.', [$e->getMessage()]);
+        }
     }
 
     public function show($id): JsonResponse
     {
-        $relationship = $this->entityRelationshipService->getEntityRelationshipById($id);
-        return response()->json($relationship);
+        try {
+            $relationship = $this->entityRelationshipService->getEntityRelationshipById($id);
+            return $this->sendResponse($relationship, 'Entity relationship retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entity relationship.', [$e->getMessage()]);
+        }
     }
 
     public function store(StoreEntityRelationshipRequest $request): JsonResponse
     {
-        $relationship = $this->entityRelationshipService->createEntityRelationship($request->validated());
-        return response()->json($relationship, 201);
+        try {
+            $relationship = $this->entityRelationshipService->createEntityRelationship($request->validated());
+            return $this->sendResponse($relationship, 'Entity relationship created successfully.', 201);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to create entity relationship.', [$e->getMessage()]);
+        }
     }
 
     public function update(UpdateEntityRelationshipRequest $request, EntityRelationship $entityRelationship): JsonResponse
     {
-        $updatedRelationship = $this->entityRelationshipService->updateEntityRelationship($entityRelationship, $request->validated());
-        return response()->json($updatedRelationship);
+        try {
+            $updatedRelationship = $this->entityRelationshipService->updateEntityRelationship($entityRelationship, $request->validated());
+            return $this->sendResponse($updatedRelationship, 'Entity relationship updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to update entity relationship.', [$e->getMessage()]);
+        }
     }
 
     public function destroy(EntityRelationship $entityRelationship): JsonResponse
     {
-        $this->entityRelationshipService->deleteEntityRelationship($entityRelationship);
-        return response()->json(null, 204);
+        try {
+            $this->entityRelationshipService->deleteEntityRelationship($entityRelationship);
+            return $this->sendResponse(null, 'Entity relationship deleted successfully.', 204);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete entity relationship.', [$e->getMessage()]);
+        }
     }
 }
