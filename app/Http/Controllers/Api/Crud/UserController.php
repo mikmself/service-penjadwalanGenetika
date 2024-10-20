@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\User;
 use App\Services\Api\Crud\UserService;
 use Illuminate\Http\JsonResponse;
+use Exception;
 
 class UserController extends Controller
 {
@@ -20,31 +21,51 @@ class UserController extends Controller
 
     public function index(): JsonResponse
     {
-        $users = $this->userService->getAllUsers();
-        return response()->json($users);
+        try {
+            $users = $this->userService->getAllUsers();
+            return $this->sendResponse($users, 'Users retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve users.', [$e->getMessage()]);
+        }
     }
 
     public function show($id): JsonResponse
     {
-        $user = $this->userService->getUserById($id);
-        return response()->json($user);
+        try {
+            $user = $this->userService->getUserById($id);
+            return $this->sendResponse($user, 'User retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve user.', [$e->getMessage()]);
+        }
     }
 
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->userService->createUser($request->validated());
-        return response()->json($user, 201);
+        try {
+            $user = $this->userService->createUser($request->validated());
+            return $this->sendResponse($user, 'User created successfully.', 201);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to create user.', [$e->getMessage()]);
+        }
     }
 
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        $updatedUser = $this->userService->updateUser($user, $request->validated());
-        return response()->json($updatedUser);
+        try {
+            $updatedUser = $this->userService->updateUser($user, $request->validated());
+            return $this->sendResponse($updatedUser, 'User updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to update user.', [$e->getMessage()]);
+        }
     }
 
     public function destroy(User $user): JsonResponse
     {
-        $this->userService->deleteUser($user);
-        return response()->json(null, 204);
+        try {
+            $this->userService->deleteUser($user);
+            return $this->sendResponse(null, 'User deleted successfully.', 204);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete user.', [$e->getMessage()]);
+        }
     }
 }

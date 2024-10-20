@@ -4,6 +4,8 @@ namespace App\Services\Api\Crud;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class UserService
 {
@@ -19,22 +21,39 @@ class UserService
 
     public function createUser(array $data)
     {
-        $data['password'] = Hash::make($data['password']);
-        return User::create($data);
+        try {
+            return DB::transaction(function () use ($data) {
+                $data['password'] = Hash::make($data['password']);
+                return User::create($data);
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error creating user: ' . $e->getMessage());
+        }
     }
 
     public function updateUser(User $user, array $data)
     {
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
+        try {
+            return DB::transaction(function () use ($user, $data) {
+                if (isset($data['password'])) {
+                    $data['password'] = Hash::make($data['password']);
+                }
+                $user->update($data);
+                return $user;
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error updating user: ' . $e->getMessage());
         }
-
-        $user->update($data);
-        return $user;
     }
 
     public function deleteUser(User $user)
     {
-        return $user->delete();
+        try {
+            return DB::transaction(function () use ($user) {
+                return $user->delete();
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error deleting user: ' . $e->getMessage());
+        }
     }
 }
