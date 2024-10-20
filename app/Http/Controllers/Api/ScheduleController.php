@@ -12,7 +12,9 @@ class ScheduleController extends Controller
     public function generateSchedule(ScheduleRequest $request)
     {
         // Dapatkan entitas terkait dengan schedule_id
-        $entities = Entity::where('schedule_id', $request->schedule_id)->with('attributeValues.attribute')->get();
+        $entities = Entity::where('schedule_id', $request->schedule_id)
+            ->with('attributes.attributeValues.attribute') // Sesuaikan relasi
+            ->get();
 
         // Buat instance GeneticAlgorithmService dengan parameter yang diambil dari request
         $geneticAlgorithmService = new GeneticAlgorithmService(

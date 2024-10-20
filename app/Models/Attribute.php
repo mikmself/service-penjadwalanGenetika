@@ -21,4 +21,8 @@ class Attribute extends Model
     {
         return $this->hasMany(AttributeValue::class);
     }
+    public function attribute()
+    {
+        return $this->belongsTo(Attribute::class); // AttributeValue milik satu Attribute
+    }
 }

@@ -16,11 +16,14 @@ class Entity extends Model
     {
         return $this->belongsTo(EntityType::class);
     }
-
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class); // Entity memiliki banyak Attribute
+    }
     // Relasi ke AttributeValue
     public function attributeValues()
     {
-        return $this->hasMany(AttributeValue::class);
+        return $this->hasManyThrough(AttributeValue::class, Attribute::class); // Entity memiliki banyak AttributeValue melalui Attribute
     }
 
     // Relasi ke EntityRelationship sebagai parent
