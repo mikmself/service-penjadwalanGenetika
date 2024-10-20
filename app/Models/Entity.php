@@ -9,18 +9,12 @@ class Entity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'entity_type_id', 'user_id'];
+    protected $fillable = ['name', 'entity_type_id', 'schedule_id'];
 
     // Relasi ke EntityType
     public function entityType()
     {
         return $this->belongsTo(EntityType::class);
-    }
-
-    // Relasi ke User
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 
     // Relasi ke AttributeValue
@@ -40,7 +34,7 @@ class Entity extends Model
     {
         return $this->hasMany(EntityRelationship::class, 'child_entity_id');
     }
-    
+
     // relasi ke table schedules
     public function schedule()
     {
