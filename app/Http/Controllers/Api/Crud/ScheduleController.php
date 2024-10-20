@@ -8,6 +8,7 @@ use App\Http\Requests\ScheduleRequest\UpdateScheduleRequest;
 use App\Models\Schedule;
 use App\Services\Api\Crud\ScheduleService;
 use Illuminate\Http\JsonResponse;
+use Exception;
 
 class ScheduleController extends Controller
 {
@@ -20,31 +21,51 @@ class ScheduleController extends Controller
 
     public function index(): JsonResponse
     {
-        $schedules = $this->scheduleService->getAllSchedules();
-        return response()->json($schedules);
+        try {
+            $schedules = $this->scheduleService->getAllSchedules();
+            return $this->sendResponse($schedules, 'Schedules retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve schedules.', [$e->getMessage()]);
+        }
     }
 
     public function show($id): JsonResponse
     {
-        $schedule = $this->scheduleService->getScheduleById($id);
-        return response()->json($schedule);
+        try {
+            $schedule = $this->scheduleService->getScheduleById($id);
+            return $this->sendResponse($schedule, 'Schedule retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve schedule.', [$e->getMessage()]);
+        }
     }
 
     public function store(StoreScheduleRequest $request): JsonResponse
     {
-        $schedule = $this->scheduleService->createSchedule($request->validated());
-        return response()->json($schedule, 201);
+        try {
+            $schedule = $this->scheduleService->createSchedule($request->validated());
+            return $this->sendResponse($schedule, 'Schedule created successfully.', 201);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to create schedule.', [$e->getMessage()]);
+        }
     }
 
     public function update(UpdateScheduleRequest $request, Schedule $schedule): JsonResponse
     {
-        $updatedSchedule = $this->scheduleService->updateSchedule($schedule, $request->validated());
-        return response()->json($updatedSchedule);
+        try {
+            $updatedSchedule = $this->scheduleService->updateSchedule($schedule, $request->validated());
+            return $this->sendResponse($updatedSchedule, 'Schedule updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to update schedule.', [$e->getMessage()]);
+        }
     }
 
     public function destroy(Schedule $schedule): JsonResponse
     {
-        $this->scheduleService->deleteSchedule($schedule);
-        return response()->json(null, 204);
+        try {
+            $this->scheduleService->deleteSchedule($schedule);
+            return $this->sendResponse(null, 'Schedule deleted successfully.', 204);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete schedule.', [$e->getMessage()]);
+        }
     }
 }

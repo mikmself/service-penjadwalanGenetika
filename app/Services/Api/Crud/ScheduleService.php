@@ -3,6 +3,8 @@
 namespace App\Services\Api\Crud;
 
 use App\Models\Schedule;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class ScheduleService
 {
@@ -18,17 +20,35 @@ class ScheduleService
 
     public function createSchedule(array $data)
     {
-        return Schedule::create($data);
+        try {
+            return DB::transaction(function () use ($data) {
+                return Schedule::create($data);
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error creating schedule: ' . $e->getMessage());
+        }
     }
 
     public function updateSchedule(Schedule $schedule, array $data)
     {
-        $schedule->update($data);
-        return $schedule;
+        try {
+            return DB::transaction(function () use ($schedule, $data) {
+                $schedule->update($data);
+                return $schedule;
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error updating schedule: ' . $e->getMessage());
+        }
     }
 
     public function deleteSchedule(Schedule $schedule)
     {
-        return $schedule->delete();
+        try {
+            return DB::transaction(function () use ($schedule) {
+                return $schedule->delete();
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error deleting schedule: ' . $e->getMessage());
+        }
     }
 }
