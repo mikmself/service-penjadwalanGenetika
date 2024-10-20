@@ -1,1 +1,1 @@
-api dynamic genetic schdule v1 
+api dynamic genetic schedule v1 
