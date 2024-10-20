@@ -6,28 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('entity_id');
             $table->string('name');
-            $table->enum('data_type', ['string', 'integer', 'datetime']); // Memperketat tipe data
-            $table->boolean('nullable')->default(false); // Mengizinkan null atau tidak
-            $table->string('default_value')->nullable(); // Nilai default jika diperlukan
+            $table->enum('data_type', ['string', 'integer', 'datetime']);
+            $table->boolean('nullable')->default(false);
+            $table->string('default_value')->nullable();
             $table->timestamps();
-
             $table->foreign('entity_id')->references('id')->on('entities')->onDelete('cascade');
         });
-
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('attributes');

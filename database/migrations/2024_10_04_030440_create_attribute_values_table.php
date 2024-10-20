@@ -6,26 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attribute_id');
-            $table->text('value_string')->nullable(); // Jika nilai berupa string
-            $table->integer('value_int')->nullable(); // Jika nilai berupa integer
-            $table->timestamp('value_datetime')->nullable(); // Jika nilai berupa datetime
+            $table->text('value_string')->nullable();
+            $table->integer('value_int')->nullable();
+            $table->timestamp('value_datetime')->nullable();
             $table->timestamps();
-
             $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('attribute_values');

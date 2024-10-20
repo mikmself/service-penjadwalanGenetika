@@ -8,12 +8,12 @@ class EntityService
 {
     public function getAllEntities()
     {
-        return Entity::with('entityType', 'schedule')->get(); // Load relations
+        return Entity::with('entityType', 'schedule')->get();
     }
 
     public function getEntityById($id)
     {
-        return Entity::with('entityType', 'schedule')->findOrFail($id); // Load relations
+        return Entity::with('entityType', 'schedule')->findOrFail($id);
     }
 
     public function createEntity(array $data)

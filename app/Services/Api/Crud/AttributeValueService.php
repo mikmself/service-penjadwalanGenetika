@@ -8,12 +8,12 @@ class AttributeValueService
 {
     public function getAllAttributeValues()
     {
-        return AttributeValue::with('attribute')->get(); // Memuat relasi ke Attribute
+        return AttributeValue::with('attribute')->get();
     }
 
     public function getAttributeValueById($id)
     {
-        return AttributeValue::with('attribute')->findOrFail($id); // Memuat relasi ke Attribute
+        return AttributeValue::with('attribute')->findOrFail($id);
     }
 
     public function createAttributeValue(array $data)

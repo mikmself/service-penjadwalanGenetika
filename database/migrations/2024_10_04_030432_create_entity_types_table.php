@@ -6,21 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('entity_types', function (Blueprint $table) {
-            $table->id(); // ID unik untuk tipe entitas
+            $table->id();
             $table->string('name');
-            $table->timestamps(); // Timestamps created_at dan updated_at
+            $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('entity_types');

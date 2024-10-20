@@ -8,12 +8,12 @@ class EntityRelationshipService
 {
     public function getAllEntityRelationships()
     {
-        return EntityRelationship::with('parentEntity', 'childEntity')->get(); // Memuat relasi parent dan child
+        return EntityRelationship::with('parentEntity', 'childEntity')->get();
     }
 
     public function getEntityRelationshipById($id)
     {
-        return EntityRelationship::with('parentEntity', 'childEntity')->findOrFail($id); // Memuat relasi parent dan child
+        return EntityRelationship::with('parentEntity', 'childEntity')->findOrFail($id);
     }
 
     public function createEntityRelationship(array $data)
