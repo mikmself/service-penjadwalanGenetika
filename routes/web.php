@@ -22,3 +22,4 @@ Route::apiResource('entity-types', \App\Http\Controllers\Api\EntityTypeControlle
 Route::apiResource('entities', \App\Http\Controllers\Api\EntityController::class);
 Route::apiResource('attributes', \App\Http\Controllers\Api\AttributeController::class);
 Route::apiResource('attribute-values', \App\Http\Controllers\Api\AttributeValueController::class);
+Route::apiResource('entity-relationships', \App\Http\Controllers\Api\EntityRelationshipController::class);
