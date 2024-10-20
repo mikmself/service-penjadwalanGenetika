@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\school;
+namespace Database\Seeders\university;
 
 use App\Models\Schedule;
 use Illuminate\Database\Seeder;
@@ -12,11 +12,14 @@ class ScheduleSeeder extends Seeder
      */
     public function run()
     {
-        // Menambahkan data contoh ke tabel schedules
         Schedule::insert([
             [
                 'user_id' => 2,
-                'name' => 'Jadwal Sekolah'
+                'name' => 'Jadwal Universitas Semester 1',
+            ],
+            [
+                'user_id' => 2,
+                'name' => 'Jadwal Universitas Semester 2',
             ],
         ]);
     }

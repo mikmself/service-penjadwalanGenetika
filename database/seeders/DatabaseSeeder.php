@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\school\AttributeSeeder;
-use Database\Seeders\school\AttributeValueSeeder;
-use Database\Seeders\school\EntityRelationshipSeeder;
-use Database\Seeders\school\EntitySeeder;
-use Database\Seeders\school\EntityTypeSeeder;
-use Database\Seeders\school\ScheduleSeeder;
-use Database\Seeders\school\UserSeeder;
+use Database\Seeders\university\AttributeSeeder;
+use Database\Seeders\university\AttributeValueSeeder;
+use Database\Seeders\university\EntityRelationshipSeeder;
+use Database\Seeders\university\EntitySeeder;
+use Database\Seeders\university\EntityTypeSeeder;
+use Database\Seeders\university\ScheduleSeeder;
+use Database\Seeders\university\UserSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\school;
+namespace Database\Seeders\university;
 
 use Illuminate\Database\Seeder;
 use App\Models\Attribute;
@@ -11,20 +11,20 @@ class AttributeSeeder extends Seeder
     public function run()
     {
         // Ambil entity yang relevan dari tabel entities
-        $guruEntity = Entity::where('name', 'Guru')->first();
+        $dosenEntity = Entity::where('name', 'Dosen')->first();
         $ruangKelasEntity = Entity::where('name', 'Ruang Kelas')->first();
-        $mataPelajaranEntity = Entity::where('name', 'Mata Pelajaran')->first();
-        $jamPelajaranEntity = Entity::where('name', 'Jam Pelajaran')->first();
+        $mataKuliahEntity = Entity::where('name', 'Mata Kuliah')->first();
+        $jamKuliahEntity = Entity::where('name', 'Jam Kuliah')->first();
 
-        // Atribut untuk Guru
+        // Atribut untuk Dosen
         Attribute::create([
-            'entity_id' => $guruEntity->id,
+            'entity_id' => $dosenEntity->id,
             'name' => 'Nama Lengkap',
             'data_type' => 'string'
         ]);
         Attribute::create([
-            'entity_id' => $guruEntity->id,
-            'name' => 'NIP',
+            'entity_id' => $dosenEntity->id,
+            'name' => 'NIDN',
             'data_type' => 'string'
         ]);
 
@@ -40,28 +40,33 @@ class AttributeSeeder extends Seeder
             'data_type' => 'integer'
         ]);
 
-        // Atribut untuk Mata Pelajaran
+        // Atribut untuk Mata Kuliah
         Attribute::create([
-            'entity_id' => $mataPelajaranEntity->id,
-            'name' => 'Nama Mata Pelajaran',
+            'entity_id' => $mataKuliahEntity->id,
+            'name' => 'Nama Mata Kuliah',
             'data_type' => 'string'
         ]);
         Attribute::create([
-            'entity_id' => $mataPelajaranEntity->id,
-            'name' => 'Kurikulum',
-            'data_type' => 'string'
+            'entity_id' => $mataKuliahEntity->id,
+            'name' => 'SKS',
+            'data_type' => 'integer'
         ]);
 
-        // Atribut untuk Jam Pelajaran
+        // Atribut untuk Jam Kuliah
         Attribute::create([
-            'entity_id' => $jamPelajaranEntity->id,
+            'entity_id' => $jamKuliahEntity->id,
             'name' => 'Waktu Mulai',
-            'data_type' => 'datetime'
+            'data_type' => 'string'
         ]);
         Attribute::create([
-            'entity_id' => $jamPelajaranEntity->id,
+            'entity_id' => $jamKuliahEntity->id,
             'name' => 'Waktu Selesai',
-            'data_type' => 'datetime'
+            'data_type' => 'string'
+        ]);
+        Attribute::create([
+            'entity_id' => $jamKuliahEntity->id,
+            'name' => 'Hari',
+            'data_type' => 'string'
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\school;
+namespace Database\Seeders\university;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -10,18 +10,18 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        //user superadmin
+        // User Superadmin
         User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('password'),
         ]);
-        // Membuat user sekolah
+
+        // User Admin Universitas
         User::create([
-            'name' => 'Admin Sekolah',
-            'email' => 'admin@sekolah.com',
+            'name' => 'Admin Universitas',
+            'email' => 'admin@universitas.com',
             'password' => Hash::make('password'),
         ]);
     }
 }
-
