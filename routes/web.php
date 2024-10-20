@@ -20,3 +20,4 @@ Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
 Route::apiResource('schedules', \App\Http\Controllers\Api\ScheduleController::class);
 Route::apiResource('entity-types', \App\Http\Controllers\Api\EntityTypeController::class);
 Route::apiResource('entities', \App\Http\Controllers\Api\EntityController::class);
+Route::apiResource('attributes', \App\Http\Controllers\Api\AttributeController::class);
