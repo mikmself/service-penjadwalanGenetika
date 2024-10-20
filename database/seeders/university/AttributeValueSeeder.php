@@ -66,7 +66,6 @@ class AttributeValueSeeder extends Seeder
             ]);
         }
 
-        // Data untuk Jam Kuliah
         $scheduleTimes = [
             ['start' => '08:00:00', 'end' => '10:00:00', 'day' => 'Senin'],
             ['start' => '10:00:00', 'end' => '12:00:00', 'day' => 'Selasa'],

@@ -11,12 +11,10 @@ class ScheduleController extends Controller
 {
     public function generateSchedule(ScheduleRequest $request)
     {
-        // Dapatkan entitas terkait dengan schedule_id
         $entities = Entity::where('schedule_id', $request->schedule_id)
-            ->with('attributes.attributeValues.attribute') // Sesuaikan relasi
+            ->with('attributes.attributeValues.attribute')
             ->get();
-
-        // Buat instance GeneticAlgorithmService dengan parameter yang diambil dari request
+        dd($entities);
         $geneticAlgorithmService = new GeneticAlgorithmService(
             $request->population_size,
             $request->max_generations,
@@ -24,10 +22,8 @@ class ScheduleController extends Controller
             $request->crossover_rate
         );
 
-        // Jalankan algoritma genetika
         $bestSchedule = $geneticAlgorithmService->runAlgorithm($entities);
 
-        // Kembalikan hasil dalam format JSON
         return response()->json([
             'status' => 'success',
             'data' => $bestSchedule,

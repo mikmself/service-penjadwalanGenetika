@@ -40,36 +40,70 @@ class GeneticAlgorithmService
     }
 
     // Randomize attribute values from attribute_values for each entity
+
     private function randomizeAttributes($entity)
     {
+        // Log entitas yang sedang diproses
+        Log::info("Processing entity:", ['entity' => $entity->name]);
+
         $attributeValues = [];
-        foreach ($entity->attributeValues as $value) {
-            switch ($value->attribute->data_type) {
-                case 'string':
-                    $attributeValues[$value->attribute->name] = $value->value_string;
-                    break;
-                case 'integer':
-                    $attributeValues[$value->attribute->name] = $value->value_int;
-                    break;
-                case 'datetime':
-                    $attributeValues[$value->attribute->name] = $value->value_datetime;
-                    break;
+        if (isset($entity->attributeValues)) {
+            foreach ($entity->attributeValues as $value) {
+                Log::info("Processing attribute:", ['attribute' => $value->attribute->name, 'value' => $value]);
+
+                switch ($value->attribute->data_type) {
+                    case 'string':
+                        $attributeValues[$value->attribute->name] = $value->value_string ?? 'N/A';
+                        break;
+                    case 'integer':
+                        $attributeValues[$value->attribute->name] = $value->value_int ?? 'N/A';
+                        break;
+                    case 'datetime':
+                        $attributeValues[$value->attribute->name] = $value->value_datetime ?? 'N/A';
+                        break;
+                    default:
+                        Log::warning("Unhandled attribute data type for entity: {$entity->name}, attribute: {$value->attribute->name}");
+                }
             }
+        } else {
+            Log::warning("Entity has no attributeValues:", ['entity' => $entity->name]);
         }
+
         return [
             'entity' => $entity->name,
             'attributes' => $attributeValues,
         ];
     }
 
+
     // Fitness function to evaluate the quality of the schedule
     public function fitness($schedule)
     {
-        // Add your fitness logic here (e.g., check for conflicts, time constraints, etc.)
         $fitnessScore = 0;
-        // Implement logic for conflicts, resource availability, etc.
+
+        // Cek tabrakan jam kuliah
+        $timeConflicts = [];
+        foreach ($schedule as $item) {
+            $timeSlot = $item['attributes']['Waktu Mulai'] . '-' . $item['attributes']['Waktu Selesai'];
+            if (!isset($timeConflicts[$timeSlot])) {
+                $timeConflicts[$timeSlot] = [];
+            }
+            $timeConflicts[$timeSlot][] = $item;
+        }
+
+        // Cek jika ada tabrakan pada waktu yang sama
+        foreach ($timeConflicts as $slot => $items) {
+            if (count($items) > 1) {
+                // Berikan penalti jika ada tabrakan
+                $fitnessScore -= 10 * count($items);
+            }
+        }
+
+        // Tambahkan logika lain untuk konflik dosen dan ruang di sini
+
         return $fitnessScore;
     }
+
 
     // Run the genetic algorithm
     public function runAlgorithm($entities)
@@ -77,27 +111,50 @@ class GeneticAlgorithmService
         $this->initializePopulation($entities);
 
         for ($generation = 0; $generation < $this->maxGenerations; $generation++) {
-            // Evaluate population
             $evaluatedPopulation = $this->evaluatePopulation();
-
-            // Select parents for crossover
             $selectedParents = $this->selection($evaluatedPopulation);
-
-            // Apply crossover
             $offspring = $this->crossover($selectedParents);
-
-            // Apply mutation
             $mutatedOffspring = $this->mutation($offspring);
-
-            // Replace old population with new offspring
             $this->population = $mutatedOffspring;
 
-            // Optionally, log progress or store best result
             Log::info("Generation: $generation, Best Fitness: " . $this->getBestFitness($evaluatedPopulation));
         }
 
-        // Return the best schedule after all generations
-        return $this->getBestSolution();
+        // Mengembalikan jadwal terbaik
+        return $this->formatBestSchedule($this->getBestSolution());
+    }
+
+// Memastikan jadwal tidak bertabrakan dan format jadwal per hari
+    private function formatBestSchedule($bestSchedule)
+    {
+        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $formattedSchedule = [];
+
+        foreach ($days as $day) {
+            $daySchedule = array_filter($bestSchedule, function($schedule) use ($day) {
+                return isset($schedule['attributes']['Hari']) && $schedule['attributes']['Hari'] === $day;
+            });
+
+            if (count($daySchedule) > 0) {
+                $formattedSchedule[$day] = array_map(function($item) {
+                    Log::info("Formatting schedule item:", ['item' => $item]);
+
+                    return [
+                        'Jam' => isset($item['attributes']['Waktu Mulai']) && isset($item['attributes']['Waktu Selesai'])
+                            ? $item['attributes']['Waktu Mulai'] . ' - ' . $item['attributes']['Waktu Selesai']
+                            : 'N/A',
+                        'Mata Kuliah' => $item['attributes']['Nama Mata Kuliah'] ?? 'N/A',
+                        'SKS' => $item['attributes']['SKS'] ?? 'N/A',
+                        'Dosen' => $item['attributes']['Nama Lengkap'] ?? 'N/A',
+                        'Ruang' => $item['attributes']['Nama Ruang'] ?? 'N/A'
+                    ];
+                }, $daySchedule);
+            } else {
+                $formattedSchedule[$day] = []; // Tetapkan array kosong jika tidak ada jadwal
+            }
+        }
+
+        return $formattedSchedule;
     }
 
     // Evaluate the fitness of each schedule in the population
