@@ -8,6 +8,7 @@ use App\Http\Requests\EntitiyRequest\UpdateEntityTypeRequest;
 use App\Models\EntityType;
 use App\Services\Api\Crud\EntityTypeService;
 use Illuminate\Http\JsonResponse;
+use Exception;
 
 class EntityTypeController extends Controller
 {
@@ -20,31 +21,51 @@ class EntityTypeController extends Controller
 
     public function index(): JsonResponse
     {
-        $entityTypes = $this->entityTypeService->getAllEntityTypes();
-        return response()->json($entityTypes);
+        try {
+            $entityTypes = $this->entityTypeService->getAllEntityTypes();
+            return $this->sendResponse($entityTypes, 'Entity types retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entity types.', [$e->getMessage()]);
+        }
     }
 
     public function show($id): JsonResponse
     {
-        $entityType = $this->entityTypeService->getEntityTypeById($id);
-        return response()->json($entityType);
+        try {
+            $entityType = $this->entityTypeService->getEntityTypeById($id);
+            return $this->sendResponse($entityType, 'Entity type retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entity type.', [$e->getMessage()]);
+        }
     }
 
     public function store(StoreEntityTypeRequest $request): JsonResponse
     {
-        $entityType = $this->entityTypeService->createEntityType($request->validated());
-        return response()->json($entityType, 201);
+        try {
+            $entityType = $this->entityTypeService->createEntityType($request->validated());
+            return $this->sendResponse($entityType, 'Entity type created successfully.', 201);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to create entity type.', [$e->getMessage()]);
+        }
     }
 
     public function update(UpdateEntityTypeRequest $request, EntityType $entityType): JsonResponse
     {
-        $updatedEntityType = $this->entityTypeService->updateEntityType($entityType, $request->validated());
-        return response()->json($updatedEntityType);
+        try {
+            $updatedEntityType = $this->entityTypeService->updateEntityType($entityType, $request->validated());
+            return $this->sendResponse($updatedEntityType, 'Entity type updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to update entity type.', [$e->getMessage()]);
+        }
     }
 
     public function destroy(EntityType $entityType): JsonResponse
     {
-        $this->entityTypeService->deleteEntityType($entityType);
-        return response()->json(null, 204);
+        try {
+            $this->entityTypeService->deleteEntityType($entityType);
+            return $this->sendResponse(null, 'Entity type deleted successfully.', 204);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete entity type.', [$e->getMessage()]);
+        }
     }
 }
