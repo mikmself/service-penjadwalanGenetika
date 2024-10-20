@@ -63,7 +63,7 @@ class ScheduleController extends Controller
     {
         try {
             $this->scheduleService->deleteSchedule($schedule);
-            return $this->sendResponse(null, 'Schedule deleted successfully.', 204);
+            return $this->sendResponse(null, 'Schedule deleted successfully.', 200);
         } catch (Exception $e) {
             return $this->sendError('Failed to delete schedule.', [$e->getMessage()]);
         }

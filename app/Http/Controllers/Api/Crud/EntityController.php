@@ -63,7 +63,7 @@ class EntityController extends Controller
     {
         try {
             $this->entityService->deleteEntity($entity);
-            return $this->sendResponse(null, 'Entity deleted successfully.', 204);
+            return $this->sendResponse(null, 'Entity deleted successfully.', 200);
         } catch (Exception $e) {
             return $this->sendError('Failed to delete entity.', [$e->getMessage()]);
         }

@@ -63,7 +63,7 @@ class AttributeController extends Controller
     {
         try {
             $this->attributeService->deleteAttribute($attribute);
-            return $this->sendResponse(null, 'Attribute deleted successfully.', 204);
+            return $this->sendResponse(null, 'Attribute deleted successfully.', 200);
         } catch (Exception $e) {
             return $this->sendError('Failed to delete attribute.', [$e->getMessage()]);
         }

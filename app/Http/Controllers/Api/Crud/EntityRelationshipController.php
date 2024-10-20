@@ -63,7 +63,7 @@ class EntityRelationshipController extends Controller
     {
         try {
             $this->entityRelationshipService->deleteEntityRelationship($entityRelationship);
-            return $this->sendResponse(null, 'Entity relationship deleted successfully.', 204);
+            return $this->sendResponse(null, 'Entity relationship deleted successfully.', 200);
         } catch (Exception $e) {
             return $this->sendError('Failed to delete entity relationship.', [$e->getMessage()]);
         }

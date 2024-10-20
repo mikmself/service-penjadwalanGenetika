@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         try {
             $this->userService->deleteUser($user);
-            return $this->sendResponse(null, 'User deleted successfully.', 204);
+            return $this->sendResponse(null, 'User deleted successfully.', 200);
         } catch (Exception $e) {
             return $this->sendError('Failed to delete user.', [$e->getMessage()]);
         }
