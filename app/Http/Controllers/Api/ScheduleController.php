@@ -3,48 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreScheduleRequest;
-use App\Http\Requests\UpdateScheduleRequest;
-use App\Models\Schedule;
-use App\Services\ScheduleService;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\ScheduleRequest\ScheduleRequest;
+use App\Models\Entity;
+use App\Services\Api\GeneticAlgorithmService;
 
 class ScheduleController extends Controller
 {
-    protected $scheduleService;
-
-    public function __construct(ScheduleService $scheduleService)
+    public function generateSchedule(ScheduleRequest $request)
     {
-        $this->scheduleService = $scheduleService;
-    }
+        // Dapatkan entitas terkait dengan schedule_id
+        $entities = Entity::where('schedule_id', $request->schedule_id)->with('attributeValues.attribute')->get();
 
-    public function index(): JsonResponse
-    {
-        $schedules = $this->scheduleService->getAllSchedules();
-        return response()->json($schedules);
-    }
+        // Buat instance GeneticAlgorithmService dengan parameter yang diambil dari request
+        $geneticAlgorithmService = new GeneticAlgorithmService(
+            $request->population_size,
+            $request->max_generations,
+            $request->mutation_rate,
+            $request->crossover_rate
+        );
 
-    public function show($id): JsonResponse
-    {
-        $schedule = $this->scheduleService->getScheduleById($id);
-        return response()->json($schedule);
-    }
+        // Jalankan algoritma genetika
+        $bestSchedule = $geneticAlgorithmService->runAlgorithm($entities);
 
-    public function store(StoreScheduleRequest $request): JsonResponse
-    {
-        $schedule = $this->scheduleService->createSchedule($request->validated());
-        return response()->json($schedule, 201);
-    }
-
-    public function update(UpdateScheduleRequest $request, Schedule $schedule): JsonResponse
-    {
-        $updatedSchedule = $this->scheduleService->updateSchedule($schedule, $request->validated());
-        return response()->json($updatedSchedule);
-    }
-
-    public function destroy(Schedule $schedule): JsonResponse
-    {
-        $this->scheduleService->deleteSchedule($schedule);
-        return response()->json(null, 204);
+        // Kembalikan hasil dalam format JSON
+        return response()->json([
+            'status' => 'success',
+            'data' => $bestSchedule,
+        ]);
     }
 }
