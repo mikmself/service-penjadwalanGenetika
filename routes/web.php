@@ -15,6 +15,19 @@ Route::get('/test', function () {
 });
 
 Route::prefix('api')->group(function () {
+    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+    Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+    Route::post('/forgot-password', [\App\Http\Controllers\Api\AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [\App\Http\Controllers\Api\AuthController::class, 'resetPassword']);
+
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/profile', [\App\Http\Controllers\Api\AuthController::class, 'profile']);
+        Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+    });
+});
+
+Route::prefix('api')->group(function () {
     Route::post('generate-schedule', [\App\Http\Controllers\Api\ScheduleController::class, 'generateSchedule']);
 
     // Crud API
