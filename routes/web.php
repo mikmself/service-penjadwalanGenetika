@@ -16,3 +16,4 @@ Route::get('/test', function () {
 
 // Route untuk menjalankan algoritma genetika pada penjadwalan
 Route::post('/api/generate-schedule', [\App\Http\Controllers\ScheduleController::class, 'generateSchedule']);
+Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
