@@ -8,6 +8,7 @@ use App\Http\Requests\EntitiyRequest\UpdateEntityRequest;
 use App\Models\Entity;
 use App\Services\Api\Crud\EntityService;
 use Illuminate\Http\JsonResponse;
+use Exception;
 
 class EntityController extends Controller
 {
@@ -20,31 +21,51 @@ class EntityController extends Controller
 
     public function index(): JsonResponse
     {
-        $entities = $this->entityService->getAllEntities();
-        return response()->json($entities);
+        try {
+            $entities = $this->entityService->getAllEntities();
+            return $this->sendResponse($entities, 'Entities retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entities.', [$e->getMessage()]);
+        }
     }
 
     public function show($id): JsonResponse
     {
-        $entity = $this->entityService->getEntityById($id);
-        return response()->json($entity);
+        try {
+            $entity = $this->entityService->getEntityById($id);
+            return $this->sendResponse($entity, 'Entity retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve entity.', [$e->getMessage()]);
+        }
     }
 
     public function store(StoreEntityRequest $request): JsonResponse
     {
-        $entity = $this->entityService->createEntity($request->validated());
-        return response()->json($entity, 201);
+        try {
+            $entity = $this->entityService->createEntity($request->validated());
+            return $this->sendResponse($entity, 'Entity created successfully.', 201);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to create entity.', [$e->getMessage()]);
+        }
     }
 
     public function update(UpdateEntityRequest $request, Entity $entity): JsonResponse
     {
-        $updatedEntity = $this->entityService->updateEntity($entity, $request->validated());
-        return response()->json($updatedEntity);
+        try {
+            $updatedEntity = $this->entityService->updateEntity($entity, $request->validated());
+            return $this->sendResponse($updatedEntity, 'Entity updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to update entity.', [$e->getMessage()]);
+        }
     }
 
     public function destroy(Entity $entity): JsonResponse
     {
-        $this->entityService->deleteEntity($entity);
-        return response()->json(null, 204);
+        try {
+            $this->entityService->deleteEntity($entity);
+            return $this->sendResponse(null, 'Entity deleted successfully.', 204);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete entity.', [$e->getMessage()]);
+        }
     }
 }

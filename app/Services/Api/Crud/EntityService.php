@@ -3,6 +3,8 @@
 namespace App\Services\Api\Crud;
 
 use App\Models\Entity;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class EntityService
 {
@@ -18,17 +20,35 @@ class EntityService
 
     public function createEntity(array $data)
     {
-        return Entity::create($data);
+        try {
+            return DB::transaction(function () use ($data) {
+                return Entity::create($data);
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error creating entity: ' . $e->getMessage());
+        }
     }
 
     public function updateEntity(Entity $entity, array $data)
     {
-        $entity->update($data);
-        return $entity;
+        try {
+            return DB::transaction(function () use ($entity, $data) {
+                $entity->update($data);
+                return $entity;
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error updating entity: ' . $e->getMessage());
+        }
     }
 
     public function deleteEntity(Entity $entity)
     {
-        return $entity->delete();
+        try {
+            return DB::transaction(function () use ($entity) {
+                return $entity->delete();
+            });
+        } catch (Exception $e) {
+            throw new Exception('Error deleting entity: ' . $e->getMessage());
+        }
     }
 }
