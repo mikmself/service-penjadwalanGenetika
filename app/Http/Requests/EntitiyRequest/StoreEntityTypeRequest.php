@@ -8,13 +8,13 @@ class StoreEntityTypeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah sesuai kebutuhan otorisasi
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255', // Nama entity type wajib ada
+            'name' => 'required|string|max:255',
         ];
     }
 }

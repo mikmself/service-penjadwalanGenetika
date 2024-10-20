@@ -8,16 +8,16 @@ class StoreAttributeValueRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah jika perlu otorisasi
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'attribute_id' => 'required|exists:attributes,id', // Validasi bahwa attribute_id harus ada
-            'value_string' => 'nullable|string', // Nilai jika tipe string
-            'value_int' => 'nullable|integer', // Nilai jika tipe integer
-            'value_datetime' => 'nullable|date', // Nilai jika tipe datetime
+            'attribute_id' => 'required|exists:attributes,id',
+            'value_string' => 'nullable|string',
+            'value_int' => 'nullable|integer',
+            'value_datetime' => 'nullable|date',
         ];
     }
 }

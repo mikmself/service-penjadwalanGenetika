@@ -15,8 +15,6 @@ class UpdateScheduleRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'start_time' => 'sometimes|required|date',
-            'end_time' => 'sometimes|required|date|after:start_time',
         ];
     }
 }

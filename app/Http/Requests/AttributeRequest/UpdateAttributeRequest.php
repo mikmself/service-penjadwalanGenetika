@@ -8,7 +8,7 @@ class UpdateAttributeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah jika ada otorisasi
+        return true;
     }
 
     public function rules(): array

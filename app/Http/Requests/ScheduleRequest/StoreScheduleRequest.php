@@ -16,8 +16,6 @@ class StoreScheduleRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id', // Validasi user harus ada
             'name' => 'required|string|max:255', // Nama schedule
-            'start_time' => 'required|date', // Waktu mulai jadwal
-            'end_time' => 'required|date|after:start_time', // Waktu akhir jadwal, harus setelah waktu mulai
         ];
     }
 }

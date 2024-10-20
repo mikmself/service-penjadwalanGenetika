@@ -8,7 +8,7 @@ class UpdateEntityRelationshipRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah jika perlu otorisasi
+        return true;
     }
 
     public function rules(): array

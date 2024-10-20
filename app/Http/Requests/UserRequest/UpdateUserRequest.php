@@ -8,7 +8,7 @@ class UpdateUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah jika ada logika otorisasi.
+        return true;
     }
 
     public function rules(): array
