@@ -18,7 +18,7 @@ class Entity extends Model
     // Relasi ke AttributeValue
     public function attributeValues()
     {
-        return $this->hasManyThrough(AttributeValue::class, Attribute::class); // Entity memiliki banyak AttributeValue melalui Attribute
+        return $this->hasManyThrough(AttributeValue::class, Attribute::class);
     }
 
     // Relasi ke EntityRelationship sebagai parent

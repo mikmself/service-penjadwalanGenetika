@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ScheduleRequest\ScheduleRequest;
 use App\Models\Entity;
 use App\Services\Api\GeneticAlgorithmService;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleController extends Controller
 {
@@ -14,6 +15,17 @@ class ScheduleController extends Controller
         $entities = Entity::where('schedule_id', $request->schedule_id)
             ->with('attributes.attributeValues.attribute')
             ->get();
+
+        Log::info("Entities retrieved for schedule", ['schedule_id' => $request->schedule_id, 'entities' => $entities]);
+
+        foreach ($entities as $entity) {
+            foreach ($entity->attributeValues as $attributeValue) {
+                if (!isset($attributeValue->attribute->name)) {
+                    Log::warning("Atribut tidak ditemukan pada entitas {$entity->name}: {$attributeValue->attribute->name}");
+                }
+            }
+        }
+
         $geneticAlgorithmService = new GeneticAlgorithmService(
             $request->population_size,
             $request->max_generations,
@@ -23,9 +35,6 @@ class ScheduleController extends Controller
 
         $bestSchedule = $geneticAlgorithmService->runAlgorithm($entities);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $bestSchedule,
-        ]);
+        return $this->sendResponse($bestSchedule, 'Schedule generated successfully');
     }
 }

@@ -40,10 +40,8 @@ class GeneticAlgorithmService
     }
 
     // Randomize attribute values from attribute_values for each entity
-
     private function randomizeAttributes($entity)
     {
-        // Log entitas yang sedang diproses
         Log::info("Processing entity:", ['entity' => $entity->name]);
 
         $attributeValues = [];
@@ -75,35 +73,70 @@ class GeneticAlgorithmService
         ];
     }
 
+    private function formatBestSchedule($bestSchedule)
+    {
+        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $formattedSchedule = [];
+
+        foreach ($days as $day) {
+            $daySchedule = array_filter($bestSchedule, function ($schedule) use ($day) {
+                return isset($schedule['attributes']['Hari']) && $schedule['attributes']['Hari'] === $day;
+            });
+
+            Log::info("Jadwal untuk hari {$day}", ['schedule' => $daySchedule]);
+
+            if (count($daySchedule) > 0) {
+                $formattedSchedule[$day] = array_map(function ($item) {
+                    return [
+                        'Jam' => $item['attributes']['Waktu Mulai'] . ' - ' . $item['attributes']['Waktu Selesai'],
+                        'Mata Kuliah' => $item['attributes']['Nama Mata Kuliah'] ?? 'N/A',
+                        'SKS' => $item['attributes']['SKS'] ?? 'N/A',
+                        'Dosen' => $item['attributes']['Nama Lengkap'] ?? 'N/A',
+                        'Ruang' => $item['attributes']['Nama Ruang'] ?? 'N/A',
+                    ];
+                }, $daySchedule);
+            } else {
+                $formattedSchedule[$day] = []; // Hari kosong
+            }
+        }
+
+        return $formattedSchedule;
+    }
 
     // Fitness function to evaluate the quality of the schedule
-    public function fitness($schedule)
+    private function fitness($schedule)
     {
         $fitnessScore = 0;
-
-        // Cek tabrakan jam kuliah
         $timeConflicts = [];
+
         foreach ($schedule as $item) {
-            $timeSlot = $item['attributes']['Waktu Mulai'] . '-' . $item['attributes']['Waktu Selesai'];
-            if (!isset($timeConflicts[$timeSlot])) {
-                $timeConflicts[$timeSlot] = [];
+            // Pengecekan apakah 'Waktu Mulai' dan 'Waktu Selesai' ada sebelum digunakan
+            $waktuMulai = array_key_exists('Waktu Mulai', $item['attributes']) ? $item['attributes']['Waktu Mulai'] : 'N/A';
+            $waktuSelesai = array_key_exists('Waktu Selesai', $item['attributes']) ? $item['attributes']['Waktu Selesai'] : 'N/A';
+
+            Log::info("Fitness - Jam:", ['Waktu Mulai' => $waktuMulai, 'Waktu Selesai' => $waktuSelesai]);
+
+            // Jika waktu valid, baru tambahkan ke pengecekan
+            if ($waktuMulai !== 'N/A' && $waktuSelesai !== 'N/A') {
+                $timeSlot = $waktuMulai . '-' . $waktuSelesai;
+                if (!isset($timeConflicts[$timeSlot])) {
+                    $timeConflicts[$timeSlot] = [];
+                }
+                $timeConflicts[$timeSlot][] = $item;
+            } else {
+                Log::warning("Missing 'Waktu Mulai' or 'Waktu Selesai' for schedule item:", ['item' => $item]);
             }
-            $timeConflicts[$timeSlot][] = $item;
         }
 
-        // Cek jika ada tabrakan pada waktu yang sama
+        // Cek tabrakan waktu
         foreach ($timeConflicts as $slot => $items) {
             if (count($items) > 1) {
-                // Berikan penalti jika ada tabrakan
-                $fitnessScore -= 10 * count($items);
+                $fitnessScore -= 10 * count($items); // Penalti untuk tabrakan jadwal
             }
         }
-
-        // Tambahkan logika lain untuk konflik dosen dan ruang di sini
 
         return $fitnessScore;
     }
-
 
     // Run the genetic algorithm
     public function runAlgorithm($entities)
@@ -120,41 +153,7 @@ class GeneticAlgorithmService
             Log::info("Generation: $generation, Best Fitness: " . $this->getBestFitness($evaluatedPopulation));
         }
 
-        // Mengembalikan jadwal terbaik
         return $this->formatBestSchedule($this->getBestSolution());
-    }
-
-// Memastikan jadwal tidak bertabrakan dan format jadwal per hari
-    private function formatBestSchedule($bestSchedule)
-    {
-        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $formattedSchedule = [];
-
-        foreach ($days as $day) {
-            $daySchedule = array_filter($bestSchedule, function($schedule) use ($day) {
-                return isset($schedule['attributes']['Hari']) && $schedule['attributes']['Hari'] === $day;
-            });
-
-            if (count($daySchedule) > 0) {
-                $formattedSchedule[$day] = array_map(function($item) {
-                    Log::info("Formatting schedule item:", ['item' => $item]);
-
-                    return [
-                        'Jam' => isset($item['attributes']['Waktu Mulai']) && isset($item['attributes']['Waktu Selesai'])
-                            ? $item['attributes']['Waktu Mulai'] . ' - ' . $item['attributes']['Waktu Selesai']
-                            : 'N/A',
-                        'Mata Kuliah' => $item['attributes']['Nama Mata Kuliah'] ?? 'N/A',
-                        'SKS' => $item['attributes']['SKS'] ?? 'N/A',
-                        'Dosen' => $item['attributes']['Nama Lengkap'] ?? 'N/A',
-                        'Ruang' => $item['attributes']['Nama Ruang'] ?? 'N/A'
-                    ];
-                }, $daySchedule);
-            } else {
-                $formattedSchedule[$day] = []; // Tetapkan array kosong jika tidak ada jadwal
-            }
-        }
-
-        return $formattedSchedule;
     }
 
     // Evaluate the fitness of each schedule in the population
@@ -168,7 +167,6 @@ class GeneticAlgorithmService
     // Select the best solutions for crossover
     private function selection($evaluatedPopulation)
     {
-        // Sort based on fitness (higher is better)
         usort($evaluatedPopulation, function ($a, $b) {
             return $b['fitness'] <=> $a['fitness'];
         });
@@ -199,13 +197,8 @@ class GeneticAlgorithmService
     {
         return array_map(function ($child) {
             if (rand() / getrandmax() < $this->mutationRate) {
-                // Pastikan 'attributes' ada sebelum diakses
-                if (isset($child['attributes']) && count($child['attributes']) > 0) {
-                    // Mutate a random part of the child
-                    $index = rand(0, count($child['attributes']) - 1);
-                    // Mutasi atribut pada index
-                    // Misalnya, ubah nilainya atau acak ulang atribut
-                }
+                // Mutate a random part of the child
+                // Mutasi atribut pada index
             }
             return $child;
         }, $offspring);
