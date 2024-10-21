@@ -9,7 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
     protected $fillable = [
         'name',
         'email',
@@ -19,18 +19,12 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-    // Relasi ke schedules
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
-
-
 }
