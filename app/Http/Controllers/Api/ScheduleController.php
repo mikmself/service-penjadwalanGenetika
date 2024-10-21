@@ -14,7 +14,6 @@ class ScheduleController extends Controller
         $entities = Entity::where('schedule_id', $request->schedule_id)
             ->with('attributes.attributeValues.attribute')
             ->get();
-        dd($entities);
         $geneticAlgorithmService = new GeneticAlgorithmService(
             $request->population_size,
             $request->max_generations,

@@ -11,10 +11,8 @@ return new class extends Migration
         Schema::create('entities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('entity_type_id');
             $table->unsignedBigInteger('schedule_id');
             $table->timestamps();
-            $table->foreign('entity_type_id')->references('id')->on('entity_types');
             $table->foreign('schedule_id')->references('id')->on('schedules');
 
         });

@@ -9,13 +9,8 @@ class Entity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'entity_type_id', 'schedule_id'];
+    protected $fillable = ['name', 'schedule_id'];
 
-    // Relasi ke EntityType
-    public function entityType()
-    {
-        return $this->belongsTo(EntityType::class);
-    }
     public function attributes()
     {
         return $this->hasMany(Attribute::class); // Entity memiliki banyak Attribute
