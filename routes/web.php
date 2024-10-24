@@ -30,6 +30,9 @@ Route::prefix('api')->group(function () {
 Route::prefix('api')->group(function () {
     Route::post('generate-schedule', [\App\Http\Controllers\Api\ScheduleController::class, 'generateSchedule']);
 
+    Route::get('schedules/{userId}', [\App\Http\Controllers\Api\DataController::class, 'getSchedulesByUser']);
+    Route::get('entities/{scheduleId}', [\App\Http\Controllers\Api\DataController::class, 'getEntitiesBySchedule']);
+    Route::get('attributes/{entityId}', [\App\Http\Controllers\Api\DataController::class, 'getAttributesByEntity']);
     // Crud API
     Route::apiResource('users', \App\Http\Controllers\Api\Crud\UserController::class);
     Route::apiResource('schedules', \App\Http\Controllers\Api\Crud\ScheduleController::class);

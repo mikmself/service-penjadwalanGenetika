@@ -18,18 +18,21 @@ class ScheduleController extends Controller
 
     public function generateSchedule(ScheduleRequest $request): JsonResponse
     {
-        // Data dari request
-        $data = $request->validated();
-
-        // Memanggil service untuk menjalankan algoritma genetika
-        $result = $this->geneticAlgorithmService->generateSchedule(
-            $data['schedule_id'],
-            $data['population_size'],
-            $data['crossover_rate'],
-            $data['mutation_rate'],
-            $data['generations']
-        );
-
-        return response()->json($result);
+        try {
+            $data = $request->validated();
+            $result = $this->geneticAlgorithmService->generateSchedule(
+                $data['schedule_id'],
+                $data['population_size'],
+                $data['crossover_rate'],
+                $data['mutation_rate'],
+                $data['generations']
+            );
+            if (empty($result) || !isset($result['schedule'])) {
+                return $this->sendError('Failed to generate a valid schedule', [], 400);
+            }
+            return $this->sendResponse($result, 'Schedule generated successfully');
+        } catch (\Exception $e) {
+            return $this->sendError('Error generating schedule', [$e->getMessage()], 500);
+        }
     }
 }

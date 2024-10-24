@@ -10,7 +10,22 @@ use Illuminate\Support\Facades\Log;
 
 class GeneticAlgorithmService
 {
-    // Fungsi utama untuk menjalankan algoritma genetika
+    private function generateInitialPopulation($entities, $populationSize)
+    {
+        $population = [];
+        for ($i = 0; $i < $populationSize; $i++) {
+            $schedule = [];
+            foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day) {
+                foreach ($entities as $entity) {
+                    if (is_object($entity)) {
+                        $schedule[$day][] = $this->generateRandomScheduleForDay($entity);
+                    }
+                }
+            }
+            $population[] = $schedule;
+        }
+        return $population;
+    }
     public function generateSchedule($scheduleId, $populationSize, $crossoverRate, $mutationRate, $generations)
     {
         $entities = Entity::where('schedule_id', $scheduleId)->get();
@@ -22,23 +37,6 @@ class GeneticAlgorithmService
             $population = $this->evaluateAndReplace($population, $offspring);
         }
         return $this->formatScheduleResult($population);
-    }
-    private function generateInitialPopulation($entities, $populationSize)
-    {
-        $population = [];
-        for ($i = 0; $i < $populationSize; $i++) {
-            $schedule = [];
-            foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day) {
-                // Loop untuk setiap hari
-                foreach ($entities as $entity) {
-                    if (is_object($entity)) {
-                        $schedule[$day][] = $this->generateRandomScheduleForDay($entity);
-                    }
-                }
-            }
-            $population[] = $schedule;
-        }
-        return $population;
     }
     private function generateRandomScheduleForDay($entity)
     {
@@ -82,9 +80,9 @@ class GeneticAlgorithmService
     private function generateRandomValueForAttribute($attribute)
     {
         if ($attribute->data_type === 'string') {
-            return 'Random String'; // Misalnya nama dosen, bisa dikembangkan
+            return 'Random String';
         } elseif ($attribute->data_type === 'integer') {
-            return rand(1, 100); // Misalnya untuk kapasitas kelas
+            return rand(1, 100);
         } elseif ($attribute->data_type === 'datetime') {
             return now()->toDateTimeString();
         }
