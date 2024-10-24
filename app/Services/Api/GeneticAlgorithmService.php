@@ -45,10 +45,10 @@ class GeneticAlgorithmService
         for ($i = 0; $i < $populationSize; $i++) {
             $schedule = [];
             foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day) {
-                // Pastikan $entity adalah object, bukan array
+                // Loop untuk setiap hari
                 foreach ($entities as $entity) {
                     if (is_object($entity)) {
-                        $schedule[$day] = $this->generateRandomScheduleForDay($entity);
+                        $schedule[$day][] = $this->generateRandomScheduleForDay($entity);
                     }
                 }
             }
@@ -58,30 +58,60 @@ class GeneticAlgorithmService
     }
 
     // Generate jadwal acak untuk setiap hari
-    private function generateRandomScheduleForDay($entities)
+    private function generateRandomScheduleForDay($entity)
     {
         $daySchedule = [];
 
-        foreach ($entities as $entity) {
-            // Pastikan $entity adalah object dan bukan boolean
-            if (!$entity || !isset($entity->id)) {
-                \Log::warning('Invalid entity detected', ['entity' => $entity]);
-                continue; // Lewati jika entity tidak valid
+        if (!$entity || !isset($entity->id)) {
+            \Log::warning('Invalid entity detected', ['entity' => $entity]);
+            return []; // Lewati jika entity tidak valid
+        }
+
+        // Ambil attributes berdasarkan entity_id
+        $attributes = Attribute::where('entity_id', $entity->id)->get();
+
+        if ($attributes->isEmpty()) {
+            \Log::warning('No attributes found for entity_id: ' . $entity->id);
+            return []; // Lewati jika tidak ada attribute
+        }
+
+        \Log::info('Attributes found for entity_id: ' . $entity->id, ['attributes' => $attributes]);
+
+        // Map attributes ke nilai attribute_values
+        $daySchedule = $attributes->map(function ($attribute) {
+            // Ambil nilai attribute_value berdasarkan attribute_id
+            $attributeValue = AttributeValue::where('attribute_id', $attribute->id)->first();
+
+            if (!$attributeValue) {
+                return ['attribute_name' => $attribute->name, 'value' => 'No value'];
             }
 
-            $attributes = Attribute::where('entity_id', $entity->id)->get();
+            // Tentukan nilai berdasarkan data_type
+            $value = $this->getAttributeValue($attributeValue);
 
-            // Lakukan proses selanjutnya dengan $attributes
-            $daySchedule[] = $attributes->map(function ($attribute) {
-                return [
-                    'attribute_name' => $attribute->name,
-                    'value' => $this->generateRandomValueForAttribute($attribute)
-                ];
-            });
-        }
+            return [
+                'attribute_name' => $attribute->name,
+                'value' => $value,
+            ];
+        })->toArray();
 
         return $daySchedule;
     }
+
+    // Fungsi tambahan untuk mengambil nilai dari attribute_values
+    private function getAttributeValue($attributeValue)
+    {
+        if ($attributeValue->value_string) {
+            return $attributeValue->value_string;
+        } elseif ($attributeValue->value_int) {
+            return $attributeValue->value_int;
+        } elseif ($attributeValue->value_datetime) {
+            return $attributeValue->value_datetime;
+        }
+
+        return null;
+    }
+
 
     // Generate nilai acak untuk setiap atribut berdasarkan tipe data
     private function generateRandomValueForAttribute($attribute)
@@ -141,8 +171,12 @@ class GeneticAlgorithmService
     private function formatScheduleResult($population)
     {
         // Ambil individu terbaik dari populasi terakhir
+        if (empty($population)) {
+            return ['message' => 'No valid schedule generated'];
+        }
+
         return [
-            'schedule' => $population[0] // Kembalikan individu terbaik sebagai hasil
+            'schedule' => $population[0] // Kembalikan individu terbaik
         ];
     }
 }
