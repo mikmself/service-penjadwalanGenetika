@@ -27,12 +27,19 @@ class ScheduleController extends Controller
                 $data['mutation_rate'],
                 $data['generations']
             );
-            if (empty($result) || !isset($result['schedule'])) {
-                return $this->sendError('Failed to generate a valid schedule', [], 400);
-            }
-            return $this->sendResponse($result, 'Schedule generated successfully');
+            return response()->json([
+                'status' => 1,
+                'httpCode' => 200,
+                'message' => 'Schedule generated successfully',
+                'data' => $result
+            ], 200);
         } catch (\Exception $e) {
-            return $this->sendError('Error generating schedule', [$e->getMessage()], 500);
+            return response()->json([
+                'status' => 0,
+                'httpCode' => 500,
+                'message' => 'Error generating schedule',
+                'errors' => $e->getMessage()
+            ], 500);
         }
     }
 }
