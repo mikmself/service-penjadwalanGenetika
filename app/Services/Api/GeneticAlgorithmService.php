@@ -10,71 +10,57 @@ class GeneticAlgorithmService
 {
     public function generateSchedule($scheduleId, $populationSize, $crossoverRate, $mutationRate, $generations)
     {
-        // Pastikan mengambil koleksi Eloquent
         $entities = Entity::where('schedule_id', $scheduleId)->get();
         $days = AttributeValue::whereHas('attribute', function ($query) {
             $query->where('name', 'Hari');
         })->pluck('value_string')->unique()->values();
-
         $population = $this->generateInitialPopulation($entities, $days, $populationSize);
-
         for ($i = 0; $i < $generations; $i++) {
             $selectedParents = $this->selectParents($population);
             $offspring = $this->crossover($selectedParents, $crossoverRate);
             $offspring = $this->mutate($offspring, $days, $mutationRate);
             $population = $this->evaluateAndReplace($population, $offspring);
         }
-
         return $this->formatScheduleResult($population[0], $days);
     }
-
+    private function generateNonConflictingSchedule($entities)
+    {
+        $daySchedule = [];
+        $usedSlots = [];
+        $mataKuliahAllocated = 0;
+        foreach ($entities as $entity) {
+            if (!is_object($entity)) {
+                continue;
+            }
+            if ($mataKuliahAllocated >= 10) break;
+            $attributes = Attribute::where('entity_id', $entity->id)->get();
+            $attributesData = $attributes->mapWithKeys(function ($attribute) use ($usedSlots) {
+                $attributeValue = AttributeValue::where('attribute_id', $attribute->id)->inRandomOrder()->first();
+                if (!$attributeValue || !is_object($attributeValue) || isset($usedSlots[$attributeValue->id])) {
+                    return [];
+                }
+                return [$attribute->name => $this->getAttributeValue($attributeValue)];
+            })->toArray();
+            if (!empty($attributesData)) {
+                $daySchedule[] = $attributesData;
+                $this->markSlotAsUsed($usedSlots, $attributesData);
+                $mataKuliahAllocated++;
+            }
+        }
+        return $daySchedule;
+    }
     private function generateInitialPopulation($entities, $days, $populationSize)
     {
         $population = [];
         for ($i = 0; $i < $populationSize; $i++) {
             $schedule = [];
             foreach ($days as $day) {
-                $schedule[$day] = $this->generateNonConflictingSchedule($entities);
+                $schedule[$day] = rand(0, 1) ? $this->generateNonConflictingSchedule($entities) : [];
             }
             $population[] = $schedule;
         }
         return $population;
     }
-
-    private function generateNonConflictingSchedule($entities)
-    {
-        $daySchedule = [];
-        $usedSlots = [];
-
-        foreach ($entities as $entity) {
-            if (!is_object($entity)) {
-                continue;
-            }
-
-            $attributes = Attribute::where('entity_id', $entity->id)->get();
-
-            $attributesData = $attributes->map(function ($attribute) use ($usedSlots) {
-                $attributeValue = AttributeValue::where('attribute_id', $attribute->id)->inRandomOrder()->first();
-
-                if (!$attributeValue || isset($usedSlots[$attributeValue->id])) {
-                    return null;
-                }
-
-                return [
-                    'attribute_name' => $attribute->name,
-                    'value' => $this->getAttributeValue($attributeValue),
-                ];
-            })->filter()->values()->toArray();
-
-            if (!empty($attributesData)) {
-                $daySchedule[] = $attributesData;
-                $this->markSlotAsUsed($usedSlots, $attributesData);
-            }
-        }
-
-        return $daySchedule;
-    }
-
     private function getAttributeValue($attributeValue)
     {
         if ($attributeValue instanceof AttributeValue) {
@@ -88,19 +74,16 @@ class GeneticAlgorithmService
         }
         return null;
     }
-
     private function markSlotAsUsed(&$usedSlots, $attributesData)
     {
         foreach ($attributesData as $data) {
-            $usedSlots[$data['attribute_name']] = true;
+            $usedSlots[] = $data;
         }
     }
-
     private function selectParents($population)
     {
         return $population;
     }
-
     private function crossover($parents, $crossoverRate)
     {
         foreach ($parents as $index => $parent) {
@@ -112,7 +95,6 @@ class GeneticAlgorithmService
         }
         return $parents;
     }
-
     private function mutate($offspring, $days, $mutationRate)
     {
         foreach ($offspring as $index => $child) {
@@ -123,12 +105,10 @@ class GeneticAlgorithmService
         }
         return $offspring;
     }
-
     private function evaluateAndReplace($population, $offspring)
     {
         return $offspring;
     }
-
     private function formatScheduleResult($schedule, $days)
     {
         $formattedSchedule = [];
