@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Attribute extends Model
 {
     use HasFactory;
-    protected $fillable = ['entity_id', 'name', 'data_type'];
+    protected $fillable = ['entity_id', 'name', 'data_type', 'nullable', 'default_value'];
     public function entity()
     {
         return $this->belongsTo(Entity::class);
