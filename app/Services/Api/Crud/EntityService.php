@@ -10,12 +10,12 @@ class EntityService
 {
     public function getAllEntities()
     {
-        return Entity::with('entityType', 'schedule')->get();
+        return Entity::with( 'schedule')->get();
     }
 
     public function getEntityById($id)
     {
-        return Entity::with('entityType', 'schedule')->findOrFail($id);
+        return Entity::with( 'schedule')->findOrFail($id);
     }
 
     public function createEntity(array $data)
