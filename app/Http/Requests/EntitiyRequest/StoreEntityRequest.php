@@ -15,7 +15,7 @@ class StoreEntityRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'entity_type_id' => 'required|exists:entity_types,id',
+            // 'entity_type_id' => 'required|exists:entity_types,id',
             'schedule_id' => 'required|exists:schedules,id',
         ];
     }
